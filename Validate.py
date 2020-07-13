@@ -10,7 +10,6 @@ from numpy import argmax
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import load_model
-from nltk.translate.bleu_score import corpus_bleu
  
 def load_clean_sentences(filename):
 	return load(open(filename, 'rb'))
@@ -46,23 +45,6 @@ def predict_sequence(model, tokenizer, source):
 		target.append(word)
 	return ' '.join(target)
  
-def evaluate_model(model, tokenizer, sources, raw_dataset):
-	actual, predicted = list(), list()
-	for i, source in enumerate(sources):
-		source = source.reshape((1, source.shape[0]))
-		translation = predict_sequence(model, tokenizer, source)
-		raw_target, raw_src = raw_dataset[i][:-1]
-		if i < 10:
-			print('src=[%s], target=[%s], predicted=[%s]' % (raw_src, raw_target, translation))
-		actual.append([raw_target.split()])
-		predicted.append(translation.split())
-
-	print('BLEU-1: %f' % corpus_bleu(actual, predicted, weights=(1.0, 0, 0, 0)))
-	print('BLEU-2: %f' % corpus_bleu(actual, predicted, weights=(0.5, 0.5, 0, 0)))
-	print('BLEU-3: %f' % corpus_bleu(actual, predicted, weights=(0.3, 0.3, 0.3, 0)))
-	print('BLEU-4: %f' % corpus_bleu(actual, predicted, weights=(0.25, 0.25, 0.25, 0.25)))
- 
-
 dataset = load_clean_sentences('english-german-both.pkl')
 train = load_clean_sentences('english-german-train.pkl')
 test = load_clean_sentences('english-german-test.pkl')
@@ -79,14 +61,8 @@ trainX = encode_sequences(ger_tokenizer, ger_length, train[:, 1])
 testX = encode_sequences(ger_tokenizer, ger_length, test[:, 1])
 
 
-model = load_model('model.h5')
-print('train')
-evaluate_model(model, eng_tokenizer, trainX, train)
-
-print('test')
-evaluate_model(model, eng_tokenizer, testX, test)
-
-sentence = testX[26].reshape((1, testX[26].shape[0]))
+model = load_model('my_model.h5')
+sentence = testX[26].reshape((1, testX[26].shape[0])) #Here choose a random index for the test sample
 target,src = test[26][:-1]
 translation = predict_sequence(model, eng_tokenizer, sentence)
 print("Sentence = ", src)
