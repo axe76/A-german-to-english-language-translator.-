@@ -79,9 +79,8 @@ model = def_model(ger_vocab_size, eng_vocab_size, ger_length,eng_length,  256)
 model.compile(optimizer='adam', loss='categorical_crossentropy')
 print(model.summary())
 
-filename = 'model.h5'
-checkpoint = ModelCheckpoint(filename, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
-model.fit(X_train, y_train, epochs=30, batch_size=64, validation_data=(X_test, y_test), callbacks=[checkpoint], verbose=2)
+model.fit(X_train, y_train, epochs=30, batch_size=64, validation_data=(X_test, y_test),  verbose=2)
+model.save('my_model.h5')
 
 
 
