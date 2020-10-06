@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Oct  3 00:03:36 2020
-
-@author: ACER
-"""
 import tensorflow as tf
 
 import matplotlib.pyplot as plt
